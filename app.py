@@ -98,6 +98,40 @@ iterator() // Example: Iterating through the stack
 Iterator<String> it = books.iterator(); // creates an iterator for the stack
     ''', language="java")
 
+    col1.subheader('HashMap')
+    col1.code('''
+put(K key, V value) // Example: Adding a book with its author to the HashMap
+HashMap<String, String> books = new HashMap<>();
+books.put("The Great Gatsby", "F. Scott Fitzgerald");
+
+get(Object key) // Example: Retrieving the author of a specific book
+String author = books.get("The Great Gatsby"); // returns "F. Scott Fitzgerald"
+
+remove(Object key) // Example: Removing a book from the HashMap
+books.remove("The Great Gatsby"); // removes the entry for "The Great Gatsby"
+
+containsKey(Object key) // Example: Checking if a book is in the HashMap
+boolean hasBook = books.containsKey("1984"); // returns true or false
+
+containsValue(Object value) // Example: Checking if a specific author is in the HashMap
+boolean hasAuthor = books.containsValue("George Orwell"); // returns true or false
+
+isEmpty() // Example: Checking if the HashMap is empty
+boolean isMapEmpty = books.isEmpty(); // returns true or false
+
+size() // Example: Checking how many books are in the HashMap
+int numberOfBooks = books.size(); // returns the current count
+
+clear() // Example: Clearing the HashMap
+books.clear(); // removes all entries from the HashMap
+
+keySet() // Example: Retrieving a set of all book titles
+Set<String> bookTitles = books.keySet(); // returns a set of keys
+
+values() // Example: Retrieving a collection of all authors
+Collection<String> authors = books.values(); // returns a collection of values
+    ''', language="java")
+
 
 with col2:
 
@@ -201,4 +235,38 @@ books.removeAll(Arrays.asList("1984", "Moby Dick")); // removes specified books
 
 retainAll(Collection<?> c) // Example: Retaining only specified books in the HashSet
 books.retainAll(Arrays.asList("The Great Gatsby")); // keeps only "The Great Gatsby"
+    ''', language="java")
+
+    col1.subheader('TreeMap')
+    col1.code('''
+put(K key, V value) // Example: Adding a book with its author to the TreeMap
+TreeMap<String, String> books = new TreeMap<>();
+books.put("The Great Gatsby", "F. Scott Fitzgerald");
+
+get(Object key) // Example: Retrieving the author of a specific book
+String author = books.get("The Great Gatsby"); // returns "F. Scott Fitzgerald"
+
+remove(Object key) // Example: Removing a book from the TreeMap
+books.remove("The Great Gatsby"); // removes the entry for "The Great Gatsby"
+
+firstKey() // Example: Retrieving the first book in the TreeMap
+String firstBook = books.firstKey(); // returns the first key
+
+lastKey() // Example: Retrieving the last book in the TreeMap
+String lastBook = books.lastKey(); // returns the last key
+
+containsKey(Object key) // Example: Checking if a book is in the TreeMap
+boolean hasBook = books.containsKey("1984"); // returns true or false
+
+isEmpty() // Example: Checking if the TreeMap is empty
+boolean isMapEmpty = books.isEmpty(); // returns true or false
+
+size() // Example: Checking how many books are in the TreeMap
+int numberOfBooks = books.size(); // returns the current count
+
+clear() // Example: Clearing the TreeMap
+books.clear(); // removes all entries from the TreeMap
+
+keySet() // Example: Retrieving a set of all book titles
+Set<String> bookTitles = books.keySet(); // returns a set of keys
     ''', language="java")
