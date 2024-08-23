@@ -180,7 +180,7 @@ def bif_python_columns():
     modulus_power = pow(3, 2, 5)  # Output: 4 (3^2 % 5)
     ''', language="python")
 
-    col2.subheader('Math Library Examples')
+    col2.subheader('Math Library')
     col2.code('''
     import math
     # Example: Calculate the sine of an angle (in radians)
@@ -200,4 +200,25 @@ def bif_python_columns():
 
     # Example: Return the floor of x, the largest integer less than or equal to x
     rounded_value = math.floor(4.2)  # Output: 4
+    ''', language="python")
+
+    col2.subheader('Code Snippets')
+    col2.code('''
+    # Example: Filtering with List Comprehension
+    filtered_list = [x for x in my_list if x > threshold]
+
+    # Example: Finding Unique Elements
+    unique_elements = list(set(my_list))  # returns unique elements from my_list
+
+    # Example: Rotating a List
+    rotated_list = my_list[k:] + my_list[:k]  # Rotate right by k
+
+    # Example: Flattening a Nested List
+    flattened = [item for sublist in my_nested_list for item in sublist]  # flattens the nested list
+
+    # Example: Checking for Duplicates
+    has_duplicates = len(my_list) != len(set(my_list))  # returns True if there are duplicates
+
+    # Example: Generating a Range of Numbers
+    range_list = list(range(start, end, step))  # generates a list of numbers from start to end with a given step
     ''', language="python")
