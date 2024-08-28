@@ -28,30 +28,33 @@ def valid(num, target):
         col1.code('''
 class Trie:
     def __init__(self):
-        # Initialize the Trie with an array for 26 lowercase letters
         self.children = [None] * 26
         self.end = False
 
     def insert(self, word):
         node = self
         for ch in word:
-            ch = ord(ch) - ord('a')
-            # Create a new Trie node if it doesn't exist for the character
+            ch = ord(ch) - ord("a")
             if not node.children[ch]:
                 node.children[ch] = Trie()
             node = node.children[ch]
-        # Mark the end of the word
         node.end = True
 
-    def search(self, word):
+    def _search_prefix(self, prefix):
         node = self
-        for ch in word:
-            ch = ord(ch) - ord('a')
-            # Check if the character path exists and if it's the end of a word
-            if not node.children[ch] or not node.children[ch].end:
-                return False
+        for ch in prefix:
+            ch = ord(ch) - ord("a")
+            if not node.children[ch]:
+                return
             node = node.children[ch]
-        return True
+        return node
+
+    def search(self, word):
+        node = self._search_prefix(word)
+        return node and node.end
+
+    def startsWith(self, prefix):
+        return bool(self._search_prefix(prefix))
 ''', language="python")
 
         col1.subheader('Sliding Window (longest valid)')
@@ -154,4 +157,58 @@ class Solution:
                 indegree[neighbor] -= 1
                 if indegree[neighbor] == 0:
                     queue.append(neighbor)
+''', language="python")
+
+        col1.subheader('Union Find')
+        col1.code('''
+class UnionFind:
+    def __init__(self, size):
+        self.parent = list(range(size))
+        self.rank = [1] * size
+
+    def find(self, p):
+        if self.parent[p] != p:
+            self.parent[p] = self.find(self.parent[p])  # Path compression
+        return self.parent[p]
+
+    def union(self, p, q):
+        rootP = self.find(p)
+        rootQ = self.find(q)
+
+        if rootP != rootQ:
+            # Union by rank
+            if self.rank[rootP] > self.rank[rootQ]:
+                self.parent[rootQ] = rootP
+            elif self.rank[rootP] < self.rank[rootQ]:
+                self.parent[rootP] = rootQ
+            else:
+                self.parent[rootQ] = rootP
+                self.rank[rootP] += 1
+
+    def connected(self, p, q):
+        return self.find(p) == self.find(q)
+''', language="python")
+
+        col1.subheader('Rolling Hash')
+        col1.code('''
+class RollingHash:
+    def __init__(self, base=257, mod=10**9 + 7):
+        self.base = base
+        self.mod = mod
+        self.hash_value = 0
+        self.power = 1
+
+    def compute_hash(self, s):
+        self.hash_value = 0
+        self.power = 1
+        for char in s:
+            self.hash_value = (self.hash_value * self.base + ord(char)) % self.mod
+            self.power = (self.power * self.base) % self.mod
+        return self.hash_value
+
+    def roll_hash(self, old_char, new_char):
+        self.hash_value = (self.hash_value * self.base - ord(old_char) * self.power + ord(new_char)) % self.mod
+        if self.hash_value < 0:
+            self.hash_value += self.mod
+        return self.hash_value
 ''', language="python")

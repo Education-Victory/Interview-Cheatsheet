@@ -30,41 +30,60 @@ bool valid(int num, int target) {
 
         col1.subheader('Trie')
         col1.code('''
+class TrieNode {
+public:
+    TrieNode* children[26];
+    bool end;
+
+    TrieNode() {
+        for (int i = 0; i < 26; i++) {
+            children[i] = nullptr;
+        }
+        end = false;
+    }
+};
+
 class Trie {
+private:
+    TrieNode* root;
+
 public:
     Trie() {
-        this->children = vector<Trie *>(26, nullptr);
-        this->end = false;
+        root = new TrieNode();
     }
 
-    bool insert(const string & word) {
-        Trie * node = this;
-        for (const auto & ch : word) {
+    void insert(const std::string& word) {
+        TrieNode* node = root;
+        for (char ch : word) {
             int index = ch - 'a';
             if (node->children[index] == nullptr) {
-                node->children[index] = new Trie();
+                node->children[index] = new TrieNode();
             }
             node = node->children[index];
         }
         node->end = true;
-        return true;
     }
 
-    bool search(const string & word) {
-        Trie * node = this;
-        for (const auto & ch : word) {
+    TrieNode* searchPrefix(const std::string& prefix) {
+        TrieNode* node = root;
+        for (char ch : prefix) {
             int index = ch - 'a';
-            if (node->children[index] == nullptr || !node->children[index]->end) {
-                return false;
+            if (node->children[index] == nullptr) {
+                return nullptr;
             }
             node = node->children[index];
         }
+        return node;
+    }
+
+    bool search(const std::string& word) {
+        TrieNode* node = searchPrefix(word);
         return node != nullptr && node->end;
     }
 
-private:
-    vector<Trie *> children;
-    bool end;
+    bool startsWith(const std::string& prefix) {
+        return searchPrefix(prefix) != nullptr;
+    }
 };
 ''', language="cpp")
 
@@ -202,6 +221,84 @@ void topologicalSort(const std::unordered_map<std::string, std::vector<std::stri
                 }
             }
         }
+    }
+};
+''', language="cpp")
+
+        col1.subheader('Union Find')
+        col1.code('''
+class UnionFind {
+private:
+    std::vector<int> parent;
+    std::vector<int> rank;
+
+public:
+    UnionFind(int size) {
+        parent.resize(size);
+        rank.resize(size, 1);
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+        }
+    }
+
+    int find(int p) {
+        if (parent[p] != p) {
+            parent[p] = find(parent[p]); // Path compression
+        }
+        return parent[p];
+    }
+
+    void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+
+        if (rootP != rootQ) {
+            // Union by rank
+            if (rank[rootP] > rank[rootQ]) {
+                parent[rootQ] = rootP;
+            } else if (rank[rootP] < rank[rootQ]) {
+                parent[rootP] = rootQ;
+            } else {
+                parent[rootQ] = rootP;
+                rank[rootP]++;
+            }
+        }
+    }
+
+    bool connected(int p, int q) {
+        return find(p) == find(q);
+    }
+};
+''', language="cpp")
+
+        col1.subheader('Rolling Hash')
+        col1.code('''
+class RollingHash {
+private:
+    static const int BASE = 257;
+    static const int MOD = 1000000007;
+    long long hashValue;
+    long long power;
+
+public:
+    RollingHash() : hashValue(0), power(1) {}
+
+    long long computeHash(const std::string& s) {
+        hashValue = 0;
+        power = 1;
+        for (char ch : s) {
+            hashValue = (hashValue * BASE + ch) % MOD;
+            power = (power * BASE) % MOD;
+        }
+        return hashValue;
+    }
+
+    long long rollHash(char oldChar, char newChar) {
+        hashValue = (hashValue * BASE - oldChar * power + newChar) % MOD;
+        if (hashValue < 0) {
+            hashValue += MOD;
+        }
+        return hashValue;
     }
 };
 ''', language="cpp")

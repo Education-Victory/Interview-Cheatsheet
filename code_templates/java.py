@@ -31,40 +31,54 @@ public static boolean valid(int num, int target) {
 
         col1.subheader('Trie')
         col1.code('''
-class Trie {
-    Trie[] children;
+class TrieNode {
+    TrieNode[] children;
     boolean end;
 
-    public Trie() {
-        children = new Trie[26];
+    public TrieNode() {
+        children = new TrieNode[26];
         end = false;
     }
+}
+
+class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
     public void insert(String word) {
-        Trie node = this;
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word.charAt(i);
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
             int index = ch - 'a';
-            // Create a new Trie node if it doesn't exist for the character
             if (node.children[index] == null) {
-                node.children[index] = new Trie();
+                node.children[index] = new TrieNode();
             }
             node = node.children[index];
         }
         node.end = true;
     }
 
-    public boolean search(String word) {
-        Trie node = this;
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word.charAt(i);
+    private TrieNode searchPrefix(String prefix) {
+        TrieNode node = root;
+        for (char ch : prefix.toCharArray()) {
             int index = ch - 'a';
-            // Check if the character path exists and if it's the end of a word
-            if (node.children[index] == null || !node.children[index].end) {
-                return false;
+            if (node.children[index] == null) {
+                return null;
             }
             node = node.children[index];
         }
+        return node;
+    }
+
+    public boolean search(String word) {
+        TrieNode node = searchPrefix(word);
         return node != null && node.end;
+    }
+
+    public boolean startsWith(String prefix) {
+        return searchPrefix(prefix) != null;
     }
 }
 ''', language="java")
@@ -143,7 +157,7 @@ public static int[] nextGreaterElements(int[] nums) {
 
         col1.subheader('BFS')
         col1.code('''
-public static Void bfs(Map<String, List<String>> graph, String start) {
+public static void bfs(Map<String, List<String>> graph, String start) {
     Set<String> visited = new HashSet<>();
     Queue<Pair<String, Integer>> queue = new LinkedList<>();
     queue.add(new Pair<>(start, 0));  // Enqueue the starting node with level 0
@@ -199,6 +213,84 @@ void topologicalSort(Map<String, List<String>> graph) {
                 queue.add(neighbor);
             }
         }
+    }
+}
+''', language="java")
+
+        col1.subheader('Union Find')
+        col1.code('''
+class UnionFind {
+    private int[] parent;
+    private int[] rank;
+
+    public UnionFind(int size) {
+        parent = new int[size];
+        rank = new int[size];
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    public int find(int p) {
+        if (parent[p] != p) {
+            parent[p] = find(parent[p]); // Path compression
+        }
+        return parent[p];
+    }
+
+    public void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+
+        if (rootP != rootQ) {
+            // Union by rank
+            if (rank[rootP] > rank[rootQ]) {
+                parent[rootQ] = rootP;
+            } else if (rank[rootP] < rank[rootQ]) {
+                parent[rootP] = rootQ;
+            } else {
+                parent[rootQ] = rootP;
+                rank[rootP]++;
+            }
+        }
+    }
+
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+}
+''', language="java")
+
+        col1.subheader('Rolling Hash')
+        col1.code('''
+class RollingHash {
+    private static final int BASE = 257;
+    private static final int MOD = 1000000007;
+    private long hashValue;
+    private long power;
+
+    public RollingHash() {
+        this.hashValue = 0;
+        this.power = 1;
+    }
+
+    public long computeHash(String s) {
+        hashValue = 0;
+        power = 1;
+        for (char ch : s.toCharArray()) {
+            hashValue = (hashValue * BASE + ch) % MOD;
+            power = (power * BASE) % MOD;
+        }
+        return hashValue;
+    }
+
+    public long rollHash(char oldChar, char newChar) {
+        hashValue = (hashValue * BASE - oldChar * power + newChar) % MOD;
+        if (hashValue < 0) {
+            hashValue += MOD;
+        }
+        return hashValue;
     }
 }
 ''', language="java")
