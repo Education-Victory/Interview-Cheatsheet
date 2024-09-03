@@ -223,3 +223,95 @@ int main() {
 }
 ''', language="cpp")
 
+        col1.subheader('Quick Select Algorithm')
+        col1.code('''
+// Leetcode 215: Kth Largest Element in an Array
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+
+int partition(std::vector<int>& arr, int left, int right, int pivotIndex) {
+    int pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    std::swap(arr[pivotIndex], arr[right]);
+    int storeIndex = left;
+
+    for (int i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            std::swap(arr[storeIndex], arr[i]);
+            storeIndex++;
+        }
+    }
+
+    // Move pivot to its final place
+    std::swap(arr[storeIndex], arr[right]);
+    return storeIndex;
+}
+
+int quickSelect(std::vector<int>& arr, int left, int right, int k) {
+    if (left == right) {  // Base case: only one element
+        return arr[left];
+    }
+
+    int pivotIndex = left + rand() % (right - left + 1);
+    pivotIndex = partition(arr, left, right, pivotIndex);
+
+    if (k == pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
+    }
+}
+
+int main() {
+    std::srand(std::time(0)); // Seed for random number generation
+    std::vector<int> arr = {3, 2, 1, 5, 4};
+    int k = 2;  // Looking for the 3rd smallest element (index 2)
+    int result = quickSelect(arr, 0, arr.size() - 1, k);
+    std::cout << result << std::endl;  // Output: 3
+    return 0;
+}
+''', language="cpp")
+
+        col1.subheader('Count Primes Algorithm')
+        col1.code('''
+// Leetcode 204: Count Primes
+#include <iostream>
+#include <vector>
+
+int countPrimes(int n) {
+    if (n <= 2) {
+        return 0;  // There are no prime numbers less than 2
+    }
+
+    std::vector<bool> primes(n, true); // Initialize a boolean vector
+    primes[0] = primes[1] = false; // 0 and 1 are not prime numbers
+
+    for (int p = 2; p * p < n; p++) {
+        if (primes[p]) {
+            // Mark all multiples of p as false
+            for (int i = p * p; i < n; i += p) {
+                primes[i] = false;
+            }
+        }
+    }
+
+    // Count the number of true values
+    int count = 0;
+    for (int p = 2; p < n; p++) {
+        if (primes[p]) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main() {
+    int n = 30;
+    std::cout << countPrimes(n) << std::endl;  // Output: 10
+    return 0;
+}
+''', language="java")
+

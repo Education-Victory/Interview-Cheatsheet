@@ -218,3 +218,101 @@ public class FastPower {
     }
 }
 ''', language="java")
+
+        col1.subheader('Quick Select Algorithm')
+        col1.code('''
+// Leetcode 215: Kth Largest Element in an Array
+import java.util.Random;
+
+public class QuickSelect {
+    private static int partition(int[] arr, int left, int right, int pivotIndex) {
+        int pivotValue = arr[pivotIndex];
+        // Move pivot to end
+        swap(arr, pivotIndex, right);
+        int storeIndex = left;
+
+        for (int i = left; i < right; i++) {
+            if (arr[i] < pivotValue) {
+                swap(arr, storeIndex, i);
+                storeIndex++;
+            }
+        }
+
+        // Move pivot to its final place
+        swap(arr, storeIndex, right);
+        return storeIndex;
+    }
+
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    public static int quickSelect(int[] arr, int left, int right, int k) {
+        if (left == right) {  // Base case: only one element
+            return arr[left];
+        }
+
+        Random random = new Random();
+        int pivotIndex = left + random.nextInt(right - left + 1);
+        pivotIndex = partition(arr, left, right, pivotIndex);
+
+        if (k == pivotIndex) {
+            return arr[k];
+        } else if (k < pivotIndex) {
+            return quickSelect(arr, left, pivotIndex - 1, k);
+        } else {
+            return quickSelect(arr, pivotIndex + 1, right, k);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {3, 2, 1, 5, 4};
+        int k = 2;  // Looking for the 3rd smallest element (index 2)
+        int result = quickSelect(arr, 0, arr.length - 1, k);
+        System.out.println(result);  // Output: 3
+    }
+}
+''', language="java")
+
+        col1.subheader('Count Primes Algorithm')
+        col1.code('''
+// Leetcode 204: Count Primes
+public class CountPrimes {
+    public static int countPrimes(int n) {
+        if (n <= 2) {
+            return 0;  // There are no prime numbers less than 2
+        }
+
+        boolean[] primes = new boolean[n]; // Initialize a boolean array
+        for (int i = 2; i < n; i++) {
+            primes[i] = true; // Initialize all entries as true
+        }
+
+        for (int p = 2; p * p < n; p++) {
+            if (primes[p]) {
+                // Mark all multiples of p as false
+                for (int i = p * p; i < n; i += p) {
+                    primes[i] = false;
+                }
+            }
+        }
+
+        // Count the number of true values
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (primes[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int n = 30;
+        System.out.println(countPrimes(n));  // Output: 10
+    }
+}
+''', language="java")
+

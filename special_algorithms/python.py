@@ -162,3 +162,69 @@ n = 10
 print(fast_power(x, n))
 ''', language="python")
 
+        col1.subheader('Quick Select Algorithm')
+        col1.code('''
+# Leetcode 215: Kth Largest Element in an Array
+import random
+
+def partition(arr, left, right, pivot_index):
+    pivot_value = arr[pivot_index]
+    # Move pivot to end
+    arr[pivot_index], arr[right] = arr[right], arr[pivot_index]
+    store_index = left
+
+    for i in range(left, right):
+        if arr[i] < pivot_value:
+            arr[store_index], arr[i] = arr[i], arr[store_index]
+            store_index += 1
+
+    # Move pivot to its final place
+    arr[right], arr[store_index] = arr[store_index], arr[right]
+    return store_index
+
+def quickselect(arr, left, right, k):
+    # Base case: only one element
+    if left == right:
+        return arr[left]
+
+    pivot_index = random.randint(left, right)
+    pivot_index = partition(arr, left, right, pivot_index)
+
+    if k == pivot_index:
+        return arr[k]
+    elif k < pivot_index:
+        return quickselect(arr, left, pivot_index - 1, k)
+    else:
+        return quickselect(arr, pivot_index + 1, right, k)
+
+# Example usage
+arr = [3, 2, 1, 5, 4]
+k = 2  # Looking for the 3rd smallest element (index 2)
+result = quickselect(arr, 0, len(arr) - 1, k)
+# Output: 3
+print(result)
+''', language="python")
+
+        col1.subheader('Count Primes Algorithm')
+        col1.code('''
+# Leetcode 204: Count Primes
+def count_primes(n):
+    if n <= 2:
+        return 0
+    # Initialize a list of boolean values
+    primes = [True] * n
+    # 0 and 1 are not prime numbers
+    primes[0] = primes[1] = False
+
+    for p in range(2, int(n**0.5) + 1):
+        if primes[p]:
+            # Mark all multiples of p as False
+            for i in range(p * p, n, p):
+                primes[i] = False
+    # Count the number of True values in the list
+    return sum(primes)
+
+n = 30
+print(count_primes(n))  # Output: 10
+''', language="python")
+
