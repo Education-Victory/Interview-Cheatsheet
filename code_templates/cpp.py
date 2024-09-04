@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+import os
 
 def ct_cpp_columns():
     col1, col2 = st.columns(2)
@@ -339,7 +340,7 @@ def ct_cpp_columns():
             st.session_state.section_index -= 1
 
     client = OpenAI(
-        api_key="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",
+        api_key=os.getenv('MY_API_KEY'),
     )
 
     prompt = "You are a programming assistant. You are provided with a programming concept followed by a code snippet. " \
