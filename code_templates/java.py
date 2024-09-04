@@ -1,11 +1,13 @@
 import streamlit as st
+from openai import OpenAI
 
 def ct_java_columns():
     col1, col2 = st.columns(2)
 
-    with col1:
-        col1.subheader('Lower Bound')
-        col1.code('''
+    code_sections = [
+        {
+        "header": 'Lower Bound',
+        "code": '''
 // Finds the index of the first element in a sorted list that is
 // greater than or equal to a specified target value using binary search.
 public static int lowerBound(int[] nums, int target) {
@@ -27,10 +29,11 @@ public static boolean valid(int num, int target) {
     // Check if the current number meets the target condition
     return num >= target;
 }
-''', language="java")
-
-        col1.subheader('Trie')
-        col1.code('''
+'''
+        },
+        {
+        "header": 'Trie',
+        "code": '''
 class TrieNode {
     TrieNode[] children;
     boolean end;
@@ -81,10 +84,9 @@ class Trie {
         return searchPrefix(prefix) != null;
     }
 }
-''', language="java")
-
-        col1.subheader('Sliding Window (longest valid)')
-        col1.code('''
+'''}, {
+        "header": 'Sliding Window (longest valid)',
+        "code": '''
 public static int longestValid(String[] strings) {
     int res = 0;
     int right = 0;
@@ -107,10 +109,11 @@ private static boolean isValid(HashSet<String> state) {
     // Return true if the state is valid, false otherwise
     return true;
 }
-''', language="java")
-
-        col1.subheader('Sliding Window (shortest valid)')
-        col1.code('''
+'''
+    },
+        {
+        "header": 'Sliding Window (shortest valid)',
+        "code": '''
 public static int shortestValid(String[] strings) {
     int res = strings.length + 1;
     int right = 0;
@@ -133,10 +136,10 @@ private static boolean isValid(HashSet<String> state) {
     // Return true if the state is valid, false otherwise
     return true;
 }
-''', language="java")
-
-        col1.subheader('Monotone Stack (next greater)')
-        col1.code('''
+'''},
+        {
+        "header": 'Monotone Stack (next greater)',
+        "code": '''
 public static int[] nextGreaterElements(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
@@ -153,10 +156,10 @@ public static int[] nextGreaterElements(int[] nums) {
 
     return result;
 }
-''', language="java")
-
-        col1.subheader('BFS')
-        col1.code('''
+'''},
+        {
+        "header": 'BFS',
+        "code": '''
 public static void bfs(Map<String, List<String>> graph, String start) {
     Set<String> visited = new HashSet<>();
     Queue<Pair<String, Integer>> queue = new LinkedList<>();
@@ -180,10 +183,10 @@ public static void bfs(Map<String, List<String>> graph, String start) {
         }
     }
 }
-''', language="java")
-
-        col1.subheader('Topological Sort')
-        col1.code('''
+'''},
+        {
+        "header": 'Topological Sort',
+        "code": '''
 void topologicalSort(Map<String, List<String>> graph) {
     Map<String, Integer> indegree = new HashMap<>();  // Track the in-degrees of nodes
     for (String node : graph.keySet()) {
@@ -215,10 +218,10 @@ void topologicalSort(Map<String, List<String>> graph) {
         }
     }
 }
-''', language="java")
-
-        col1.subheader('Union Find')
-        col1.code('''
+'''},
+        {
+        "header": 'Union Find',
+        "code": '''
 class UnionFind {
     private int[] parent;
     private int[] rank;
@@ -260,10 +263,10 @@ class UnionFind {
         return find(p) == find(q);
     }
 }
-''', language="java")
-
-        col1.subheader('Rolling Hash')
-        col1.code('''
+'''},
+        {
+        "header": 'Rolling Hash',
+        "code": '''
 class RollingHash {
     private static final int BASE = 257;
     private static final int MOD = 1000000007;
@@ -293,4 +296,76 @@ class RollingHash {
         return hashValue;
     }
 }
-''', language="java")
+'''}
+        ]
+
+    # keep track of current section
+    if 'section_index' not in st.session_state:
+        st.session_state.section_index = 0
+
+    if 'javacodes' not in st.session_state:
+        st.session_state.javacodes = code_sections
+
+    def display_code():
+        st.subheader(st.session_state.javacodes[st.session_state.section_index]["header"])
+        if not hide:
+            st.code(st.session_state.javacodes[st.session_state.section_index]["code"], language="java")
+        else:
+            st.code("Code template hidden.")
+
+    def next_code():
+        if st.session_state.section_index + 1 >= len(st.session_state.javacodes):
+            st.session_state.section_index = 0
+        else:
+            st.session_state.section_index += 1
+
+    def previous_code():
+        if st.session_state.section_index > 0:
+            st.session_state.section_index -= 1
+
+    client = OpenAI(
+        api_key="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",
+    )
+
+    prompt = "You are a programming assistant. You are provided with a programming concept followed by a code snippet. " \
+             "Your task is to check the following: 1. Syntax Validity: Ensure the code has no syntax errors. " \
+             "2. Concept Implementation: Verify if the code approximately follows the right way of implementing " \
+             "the given concept. Respond with one of the following ONLY: 'Valid Code' if both criteria are satisfied." \
+             "'Syntax Error' if there are syntax errors in the code. 'Needs Improvement' if the code is not correctly " \
+             "implementing the concept."
+    def check_syntax(header, code):
+        response = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a programming assistant."},
+                {"role": "user", "content": prompt + "\n\n" + header + "\n\n" + code}
+            ],
+            model="gpt-3.5-turbo",
+            max_tokens=2
+        )
+        return response.choices[0].message.content.strip()
+
+    hide = st.checkbox("Hide code", key="java_hide")
+    # Display the current code section in the first column
+    with col1:
+        display_code()
+        button_1, _, button_2, = st.columns([1, 2.7, 1])
+
+        if button_1.button("Previous", key="java_prev", on_click=previous_code):
+            pass
+
+        if button_2.button("Next", key="java_next", on_click=next_code):
+            pass
+
+    # Display a text box in the second column for user input
+    with col2:
+        col2.subheader("Exercise")
+        user_input = st.text_area("label", height=400, label_visibility="collapsed", key="java_prac")
+        check, _, submit = st.columns([1, 2.7, 1])
+
+        if check.button("Check", key="java_check"):
+            if user_input:
+                check_result = check_syntax(code_sections[st.session_state.section_index]["header"], user_input)
+                st.write("Check Result:")
+                st.code(check_result)
+            else:
+                st.warning("Please enter some code before checking.")
