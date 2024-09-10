@@ -222,3 +222,21 @@ def bif_python_columns():
     # Example: Generating a Range of Numbers
     range_list = list(range(start, end, step))  # generates a list of numbers from start to end with a given step
     ''', language="python")
+
+    col2.subheader("Random Library");
+    col2.code('''
+        # Return a random number between min and max
+        min_val = 5
+        max_val = 15
+        random_in_range = random.randint(min_val, max_val)
+
+        # Return a random number between 1 and 10
+        n = 10
+        random_number = random.randint(1, n)
+
+        # Return a random double between 0.0 and 1.0
+        random_double = random.random()
+
+        # Return a random boolean value (True or False)
+        random_boolean = random.choice([True, False])
+        ''', language="python");

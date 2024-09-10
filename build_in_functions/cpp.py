@@ -232,3 +232,21 @@ def bif_cpp_columns():
     // Example: Return the floor of x
     double rounded_value_floor = floor(4.2);  // Output: 4.0
     ''', language="cpp");
+
+    col2.subheader("Random Library");
+    col2.code('''
+        // Return a random number between min and max
+        int min = 5;
+        int max = 15;
+        int randomInRange = std::rand() % (max - min + 1) + min;
+
+        // Return a random number between 1 and 10
+        int n = 10;
+        int randomNumber = std::rand() % n + 1;
+
+        // Return a random double between 0.0 and 1.0
+        double randomDouble = static_cast<double>(std::rand()) / RAND_MAX;
+
+        // Return a random boolean value (true or false)
+        bool randomBoolean = std::rand() % 2 == 0;
+        ''', language="cpp");

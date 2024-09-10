@@ -205,3 +205,24 @@ def bif_java_columns():
         return a;
     }
     ''', language="java");
+
+    col2.subheader("Random Library");
+    col2.code('''
+    // Return a random number between min and max
+    Random random = new Random();
+    int min = 5;
+    int max = 15;
+    int randomInRange = random.nextInt(max - min + 1) + min;
+
+    // Return a random number between 1 and 10
+    int n = 10;
+    int randomNumber = random.nextInt(n) + 1;
+
+    // Return a random double between 0.0 and 1.0
+    Random random = new Random();
+    double randomDouble = random.nextDouble();
+
+    // Return a random boolean value (true or false)
+    Random random = new Random();
+    boolean randomBoolean = random.nextBoolean();
+    ''', language="java");
